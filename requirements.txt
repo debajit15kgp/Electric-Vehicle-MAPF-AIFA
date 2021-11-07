@@ -1,10 +1,4 @@
-os
-pandas
-sys
-argparse
-yaml
-math
-itertools
-copy
 numpy
-pandas
+matplotlib
+scipy
+ffmpeg-python

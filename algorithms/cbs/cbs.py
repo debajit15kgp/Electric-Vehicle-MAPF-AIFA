@@ -1,4 +1,3 @@
-
 import sys
 sys.path.insert(0, '../')
 import argparse
@@ -6,10 +5,8 @@ import yaml
 from math import fabs
 from itertools import combinations
 from copy import deepcopy
-import numpy
-from cbs.a_star import AStar
 
-cnt =0 
+from cbs.a_star import AStar
 
 class Location(object):
     def __init__(self, x=-1, y=-1):
@@ -28,10 +25,7 @@ class State(object):
         return self.time == other.time and self.location == other.location
     def __hash__(self):
         return hash(str(self.time)+str(self.location.x) + str(self.location.y))
-    def is_equal_except_time(self, state,):
-        # if(self.location == state.location):
-        #     print("current-location - ",self.location ) 
-        #     print("end-location - ",state.location )
+    def is_equal_except_time(self, state):
         return self.location == state.location
     def __str__(self):
         return str((self.time, self.location.x, self.location.y))
@@ -206,72 +200,21 @@ class Environment(object):
     def is_solution(self, agent_name):
         pass
 
-    # function to add heuristics to loss function
     def admissible_heuristic(self, state, agent_name):
         goal = self.agent_dict[agent_name]["goal"]
-        if(self.agent_dict[agent_name]['check'].location.y ==1):
-            # return fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y) 
-        if(self.agent_dict[agent_name]['check'].location.x ==1):
-            x = fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y)
-            x+= fabs(self.agent_dict[agent_name]["drop"].location.x - self.agent_dict[agent_name]["end"].location.x) + fabs(self.agent_dict[agent_name]["drop"].location.y - self.agent_dict[agent_name]["end"].location.y)
-            # return x
-        # return fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y)
-        return 0
-    
+        return fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y)
 
-    # check if at goal
+
     def is_at_goal(self, state, agent_name):
-        # print(state.location)
-        # print(goal_state.location)
-        # if(state.location == self.agent_dict[agent_name]['goal'].location and state.location== self.agent_dict[agent_name]["pick"].location):
-        #     print('works')
-        # if(agent_name == 'agent1'):
-        #     print(state.location)
-        # if (state.location.x == self.agent_dict[agent_name]['goal'].location.x and state.location.y == self.agent_dict[agent_name]['goal'].location.y  and state.location== self.agent_dict[agent_name]["drop"].location ):
-        #     # print('drop to end')
-        #     self.agent_dict[agent_name]["start"] = self.agent_dict[agent_name]["drop"]
-        #     self.agent_dict[agent_name]["goal"] = self.agent_dict[agent_name]["end"]
-
-        # if (state.location.x == self.agent_dict[agent_name]['goal'].location.x and state.location.y == self.agent_dict[agent_name]['goal'].location.y and state.location== self.agent_dict[agent_name]["pick"].location):
-        #     # print('pick to drop')
-        #     self.agent_dict[agent_name]["start"] = self.agent_dict[agent_name]["pick"]
-        #     self.agent_dict[agent_name]["goal"] = self.agent_dict[agent_name]["drop"]
-        
-        # if(agent_name == 'agent1'):
-        #     print(state.location)
         goal_state = self.agent_dict[agent_name]["goal"]
-        start_state = self.agent_dict[agent_name]["start"]
-        #print(state.is_equal_except_time(goal_state))
-        # if(state.is_equal_except_time(goal_state)):
-        #     if(self.agent_dict[agent_name]['start'].location.x != self.agent_dict[agent_name]['goal'].location.x and self.agent_dict[agent_name]['start'].location.y != self.agent_dict[agent_name]['goal'].location.y ):
-        #         self.agent_dict[agent_name]['start'].location.x = self.agent_dict[agent_name]['goal'].location.x
-        #         self.agent_dict[agent_name]['start'].location.y = self.agent_dict[agent_name]['goal'].location.y
-        #         self.agent_dict[agent_name]["goal"].location.x = 9
-        #         self.agent_dict[agent_name]["goal"].location.y = 9
-        # if(agent_name == "agent1" and state.location.x == self.agent_dict[agent_name]['goal'].location.x and state.location.y == self.agent_dict[agent_name]['goal'].location.y and state.location.x!=9 and state.location.y!=9):
-        #     self.agent_dict[agent_name]['start'].location.x = self.agent_dict[agent_name]['goal'].location.x
-        #     self.agent_dict[agent_name]['start'].location.y = self.agent_dict[agent_name]['goal'].location.y
-        #     self.agent_dict[agent_name]["goal"].location.x = 9
-        #     self.agent_dict[agent_name]["goal"].location.y = 9
-        # if(state.is_equal_except_time(goal_state)):
-        #     print("agent: ", agent_name)
-        #     print("current-location - ",state.location )
-        #     print("end-location - ",goal_state.location )
-        #     print("start-location - ",start_state.location )
-        #     print(" ")
-        
         return state.is_equal_except_time(goal_state)
 
     def make_agent_dict(self):
         for agent in self.agents:
             start_state = State(0, Location(agent['start'][0], agent['start'][1]))
-            pick_state = State(0, Location(agent['pick'][0], agent['pick'][1]))
-            drop_state = State(0, Location(agent['drop'][0], agent['drop'][1]))
-            end_state = State(0, Location(agent['end'][0], agent['end'][1]))
-            goal_state = State(0, Location(agent['pick'][0], agent['pick'][1]))
-            check = State(0,Location(agent['check'][0],agent['check'][1])) 
-            # self.agent_dict.update({agent['name']:{'start':start_state, 'goal':goal_state}})
-            self.agent_dict.update({agent['name']:{'start':start_state, 'pick':pick_state, 'drop':drop_state, 'end':end_state, 'goal':goal_state, "check":check}})
+            goal_state = State(0, Location(agent['goal'][0], agent['goal'][1]))
+
+            self.agent_dict.update({agent['name']:{'start':start_state, 'goal':goal_state}})
 
     def compute_solution(self):
         solution = {}
@@ -356,8 +299,8 @@ class CBS(object):
             path_dict_list = [{'t':state.time, 'x':state.location.x, 'y':state.location.y} for state in path]
             plan[agent] = path_dict_list
         return plan
-# give input agent location, tash, pick and drop location along with 2 bool for checking if reached pickup and drop
-# give blocked path and temperary storage unit
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("param", help="input file containing map and obstacles")

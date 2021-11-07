@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#/usr/bin/env python3
 import yaml
 import matplotlib
 # matplotlib.use("Agg")
@@ -11,7 +11,7 @@ import matplotlib.animation as manimation
 import argparse
 import math
 
-Colors = ['cyan', 'orange', 'yellow']
+Colors = ['orange', 'blue', 'green']
 
 
 class Animation:
@@ -47,28 +47,16 @@ class Animation:
     # self.ax.axis('tight')
     # self.ax.axis('off')
 
-    self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='black'))
+    self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='red'))
     for o in map["map"]["obstacles"]:
       x, y = o[0], o[1]
-      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='black', edgecolor='black'))
-      
-    """
-    comment out if not using temporary storage
-    self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='green'))
-    for o in map["map"]["temporary_storage"]:
-      x, y = o[0], o[1]
-      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='green', edgecolor='green'))
-    """
-      
-
+      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='red'))
 
     # create agents:
     self.T = 0
     # draw goals first
     for d, i in zip(map["agents"], range(0, len(map["agents"]))):
-      self.patches.append(Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor="cyan", edgecolor='black', alpha=0.5))
-      self.patches.append(Rectangle((d["pickup"][0] - 0.25, d["pickup"][1] - 0.25), 0.5, 0.5, facecolor="pink", edgecolor='black', alpha=0.5))
-      self.patches.append(Rectangle((d["destination"][0] - 0.25, d["destination"][1] - 0.25), 0.5, 0.5, facecolor="orange", edgecolor='black', alpha=0.5))
+      self.patches.append(Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor=Colors[0], edgecolor='black', alpha=0.5))
     for d, i in zip(map["agents"], range(0, len(map["agents"]))):
       name = d["name"]
       self.agents[name] = Circle((d["start"][0], d["start"][1]), 0.3, facecolor=Colors[0], edgecolor='black')
@@ -172,8 +160,7 @@ if __name__ == "__main__":
 
   animation = Animation(map, schedule)
 
-  #if args.video:
-  #animation.save(args.video, args.speed)
-  #else:
-  animation.show()
-    #animation.close()
+  if args.video:
+    animation.save(args.video, args.speed)
+  else:
+    animation.show()
