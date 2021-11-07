@@ -11,7 +11,7 @@ import matplotlib.animation as manimation
 import argparse
 import math
 
-Colors = ['orange', 'blue', 'green']
+Colors = ['green', 'red', 'blue']
 
 
 class Animation:
@@ -47,19 +47,19 @@ class Animation:
     # self.ax.axis('tight')
     # self.ax.axis('off')
 
-    self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='red'))
+    self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='violet'))
     for o in map["map"]["obstacles"]:
       x, y = o[0], o[1]
-      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='red'))
+      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='violet', edgecolor='violet'))
 
     # create agents:
     self.T = 0
     # draw goals first
     for d, i in zip(map["agents"], range(0, len(map["agents"]))):
-      self.patches.append(Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor=Colors[0], edgecolor='black', alpha=0.5))
+      self.patches.append(Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor=Colors[0], edgecolor='violet', alpha=0.5))
     for d, i in zip(map["agents"], range(0, len(map["agents"]))):
       name = d["name"]
-      self.agents[name] = Circle((d["start"][0], d["start"][1]), 0.3, facecolor=Colors[0], edgecolor='black')
+      self.agents[name] = Circle((d["start"][0], d["start"][1]), 0.3, facecolor=Colors[0], edgecolor='violet')
       self.agents[name].original_face_color = Colors[0]
       self.patches.append(self.agents[name])
       self.T = max(self.T, schedule["schedule"][name][-1]["t"])
@@ -118,8 +118,8 @@ class Animation:
         pos1 = np.array(d1.center)
         pos2 = np.array(d2.center)
         if np.linalg.norm(pos1 - pos2) < 0.7:
-          d1.set_facecolor('red')
-          d2.set_facecolor('red')
+          d1.set_facecolor('violet')
+          d2.set_facecolor('violet')
           print("COLLISION! (agent-agent) ({}, {})".format(i, j))
 
     return self.patches + self.artists
